@@ -44,7 +44,7 @@ pre {
     margin: 0;
     font-size: 15px;
     text-align: left;
-    whitesmoke-space: pre-wrap;
+    white-space: pre-wrap;
 }
 #gramatica pre,
 #gramatica code {
@@ -185,3 +185,4 @@ input:focus {
 .painel-input {
     padding: 15px;
 }
+
