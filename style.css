@@ -1,189 +1,187 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Parser LL(1)</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-    <h1>Simulador de Autômato de Pilha</h1>
-
-    <section class="card" id="gramatica">
-        <h2>Gramática</h2>
-        <pre><code>
-        S ::= aAc | bBd | cCa
-        A ::= aD | dS 
-        B ::= bD | ε
-        C ::= cD | dA
-        D ::= dB | aB
-        </code></pre>
-    </section>
-
-    <section class="card">
-        <h2>Conjuntos FIRST e FOLLOW</h2>
-
-        <div id="first-follow-container">
-
-            <div class="box">
-                <pre><code>
-FIRST S = {a, b, c}
-FIRST A = {a, d}
-FIRST B = {b, ε}
-FIRST C = {c, d}
-FIRST D = {d, a}
-                </code></pre>
-            </div>
-
-            <div class="box">
-                <pre><code>
-FOLLOW S = {a, c, $}
-FOLLOW A = {a, c}
-FOLLOW B = {a, c, d}
-FOLLOW C = {a}
-FOLLOW D = {a, c, d}
-                </code></pre>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="card">
-        <h2>Tabela de Parsing LL(1)</h2>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>NT</th>
-                    <th>a</th>
-                    <th>b</th>
-                    <th>c</th>
-                    <th>d</th>
-                    <th>$</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <th>S</th>
-                    <td>S → aAc</td>
-                    <td>S → bBd</td>
-                    <td>S → cCa</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-
-                <tr>
-                    <th>A</th>
-                    <td>A → aD</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>A → dS</td>
-                    <td>-</td>
-                </tr>
-
-                <tr>
-                    <th>B</th>
-                    <td>B → ε</td>
-                    <td>B → bD</td>
-                    <td>B → ε</td>
-                    <td>B → ε</td>
-                    <td>-</td>
-                </tr>
-
-                <tr>
-                    <th>C</th>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>C → cD</td>
-                    <td>C → dA</td>
-                    <td>-</td>
-                </tr>
-
-                <tr>
-                    <th>D</th>
-                    <td>D → aB</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>D → dB</td>
-                    <td>-</td>
-                </tr>
-            </tbody>
-
-        </table>
-    </section>
-
-    <section class="card">
-        <h2>Geração Intuitiva de Sentenças</h2>
-
-        <div class="producoes">
-            <div class="linha">
-                <span class="nt">S</span>
-                <span class="prod" data-nt="S" data-prod="aAc">S → aAc</span>
-                <span class="prod" data-nt="S" data-prod="bBd">S → bBd</span>
-                <span class="prod" data-nt="S" data-prod="cCa">S → cCa</span>
-            </div>
-
-            <div class="linha">
-                <span class="nt">A</span>
-                <span class="prod" data-nt="A" data-prod="aD">A → aD</span>
-                <span class="prod" data-nt="A" data-prod="dS">A → dS</span>
-            </div>
-
-            <div class="linha">
-                <span class="nt">B</span>
-                <span class="prod" data-nt="B" data-prod="bD">B → bD</span>
-                <span class="prod" data-nt="B" data-prod="ε">B → ε</span>
-            </div>
-
-            <div class="linha">
-                <span class="nt">C</span>
-                <span class="prod" data-nt="C" data-prod="cD">C → cD</span>
-                <span class="prod" data-nt="C" data-prod="dA">C → dA</span>
-            </div>
-
-            <div class="linha">
-                <span class="nt">D</span>
-                <span class="prod" data-nt="D" data-prod="dB">D → dB</span>
-                <span class="prod" data-nt="D" data-prod="aB">D → aB</span>
-            </div>
-        </div>
-
-        <div class="painel-intuitivo">
-            <label>Sentença gerada:</label>
-            <input id="sentencaIntuitiva" readonly>
-
-            <button onclick="resetDerivacao()">Redefinir</button>
-            <button onclick="enviarParaAnalise()">Enviar para análise</button>
-        </div>
-    </section>
-
-    <section class="card">
-        <h2>Analisador LL(1)</h2>
-
-        <div class="painel-input">
-            <label>Entrada:</label>
-            <input id="entrada">
-            <button onclick="executarAnalise()">Analisar</button>
-            <button onclick="passoAPasso()">Passo a passo</button>
-        </div>
-
-        <table id="tabelaPassos">
-            <thead>
-                <tr>
-                    <th>Pilha</th>
-                    <th>Entrada</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <div id="resultado"></div>
-    </section>
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background: whitesmoke;
+    color: #1c61a5;
+    margin: 20px;
+}
 
 
-    <script src="script.js"></script>
-</body>
-</html>
+h1 {
+    text-align: center;
+    color: #1c61a5;
+    font-size: 32px;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid black;
+}
+
+.card {
+    background: whitesmoke;
+    color: #1c61a5;
+    border: 3px solid black;
+    padding: 0;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: large;
+}
+
+.card h2 {
+    margin: 0;
+    padding: 12px 0;
+    text-align: center;
+    background: #1c61a5;
+    color: whitesmoke;
+    border-bottom: 3px solid black;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+pre {
+    background: whitesmoke;
+    color: #1c61a5;
+    padding: 20px 25px;
+    margin: 0;
+    font-size: 15px;
+    text-align: left;
+    whitesmoke-space: pre-wrap;
+}
+#gramatica pre,
+#gramatica code {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #1c61a5;
+}
+
+#first-follow-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+#first-follow-container .box {
+    width: 50%;
+    border-right: 2px solid black;
+}
+
+#first-follow-container .box:last-child {
+    border-right: none;
+}
+
+#first-follow-container pre,
+#first-follow-container code {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #1c61a5;
+}
+
+
+.linha {
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+.nt {
+    font-weight: bold;
+    display: inline-block;
+    width: 30px;
+}
+
+.prod {
+    padding: 5px 10px;
+    margin: 3px;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background: whitesmoke;
+    color: #1c61a5;
+    border: 2px solid #1c61a5;
+}
+
+.prod.habilitado {
+    background: #fff9d6;
+}
+
+.prod.desabilitado {
+    background: #d9d9d9;
+    color: #666;
+    opacity: 0.6;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #1c61a5;
+    color: whitesmoke;
+    padding: 8px;
+    border: 1px solid black;
+}
+
+td {
+    background: whitesmoke;
+    color: #1c61a5;
+    padding: 8px;
+    border: 1px solid #1c61a5;
+}
+
+button {
+    background: #1c61a5;
+    color: whitesmoke;
+    border: 2px solid black;
+    padding: 10px 22px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin: 5px;
+}
+
+button:hover {
+    background: #003267;
+    transform: scale(1.04);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+
+input {
+    width: 100%;
+    height: 45px;
+    border-radius: 8px;
+    font-size: 18px;
+    padding: 8px 12px;
+    border: 2px solid #1c61a5;
+    background: #f8faff;
+    color: #1c61a5;
+    margin-bottom: 12px;
+    box-shadow: 0 0 5px #1c61a533;
+    transition: 0.2s;
+}
+
+input:focus {
+    border: 2px solid black;
+    outline: none;
+    background: whitesmoke;
+    box-shadow: 0 0 8px black88;
+}
+
+#sentencaIntuitiva {
+    font-weight: bold;
+    background: #fff9d6;
+    border-color: black;
+}
+
+.painel-intuitivo {
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.painel-input {
+    padding: 15px;
+}
